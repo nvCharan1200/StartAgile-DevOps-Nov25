@@ -1,0 +1,682 @@
+Containerization with Docker
+
+
+Hello Everyone!
+Trainer: Sonal Mittal
+
+Guidelines for my sessions:
+
+-> The training starts sharp at 8.05PM everyday -> pls join on time
+-> We will first complete the agenda and demonstrations
+-> after that we will the Q & A sessions 
+-> keep your questions to the topic 
+-> during the class, pls be attentive and if you do not understand any thing -> pls tell me at that moment only-> I will repeat it for you
+-> if class is fast-> stop me there itself -> tell me to slow down
+-> if class is boring and slow -> tell me i will speed up or give u a different example.
+-> we will have a break of 10 mins/ 15 mins at 9.30PM
+-> we will have feedback poll at 10.25pm
+
+Agenda:
+===========================
+> What is Continuous Deployment
+Introduction to Docker
+Docker Architecture
+Installation of Docker on AWS ec2 server -> free of cost-> t3.micro
+Docker Images and docker containers -> commands
+
+
+> What is Continuous Deployment
+
+
+What is Deployment ??
+
+Developer (expert in programming language) -> write source code for an application (git & github for version control)
+Our servers/machines -> cannot understand programming langauages --> they understand 0 and 1(binary)
+The source code is converted to machine understandable code ---> BUILD (compile + tested + package the code)-->Artifact - Jenkins sessions
+Once we have the artifact we need to copy it on a desired server/environment --> deployment 
+After it is copied on the server --> we can call it that application is live, application is deployed , application is running
+users can use  the application
+
+Continuous Deployment:
+Developer writes the code --> We builds the code -> we deploy the code on the desired server immediately
+When we have to do a task again and again - multiple times -> should we do manually -> no
+We will use automation tool -> deployment automation tool
+examples of Continuous Deployment tools
+Docker, kubernetes, ansible, argocd, flux cd, openshift
+
+
+For an application to run without any issues in a server or machine, it requires underlying valid dependencies 
+
+These underlying dependencies are nothing but OS, libraries, webservers, db servers needed for app to run
+
+Traditionally before deploying the application 
+System admin -> will create machines --> manually install OS, libraries, webservers, db servers needed for app to run
+Then copy the main artifact in the desired location -> application is LIVE
+
+But with devops we want to automate this -> No manual --> we need a tool to do this
+
+SO here we need a  tool that can help us:
+ - setup the environment 
+ - provide the underlying dependencies
+ - run the application in the environment
+
+That tool is - DOCKER 
+Docker is an automation tool --> it is a deployment tool 
+Docker is very easy tool 
+Docker is free of cost, an enterprise version is also available
+Docker provides us Containers 
+Containers : are environment which have our application deployed along with its dependencies installed on it -automatically 
+So we just need to learn how to create container 
+
+before we start deploying our custom applications --> we need to learn 
+
+how to create a container using docker
+How to access a container in Docker
+how to go inside the container 
+how to delete a container 
+
+
+Components of Docker:
+=========================
+1. Docker HUB: 
+==========================
+It is a registry(where you maintain binary files).
+It is open source public server ,Anybody can access it - https://hub.docker.com/
+All Docker Images are maintained for free in Docker Hub
+
+2. DOCKER HOST:
+=========================
+Machine where we install docker is called as Docker Host 
+On the docker host we get a background process called as Docker daemon
+Docker daemon process is responsible to download/pull images from docker hub
+Docker daemon process is responsible to run images and create container 
+
+3. Docker Images :
+=====================
+
+Docker Image is a binary file, which consist of libraires or binaries needed for your application to run
+
+When we run the image we get a CONTAINER 
+
+What ever is there on the image --> will be running in the container 
+
+This is a static file, which consist of libraires or binaries needed for your application to run
+
+2 types of Images: 
+==========================
+> Base Images -> docker provided free images 
+    - OS images 
+    - Webserver images 
+> Custom Image -> you and create these images 
+
+4. Docker Container:
+==========================
+A running instance of an Image is a Docker Container
+It is a environment where application is running.
+
+
+
+Installation of Docker
+
+
+
+
+# sudo su -
+
+# sudo apt update
+
+# sudo apt install ca-certificates curl
+
+# sudo install -m 0755 -d /etc/apt/keyrings
+
+# sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+
+# sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+# sudo tee /etc/apt/sources.list.d/docker.sources <<EOF
+
+Types: deb
+
+URIs: https://download.docker.com/linux/ubuntu
+
+Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
+
+Components: stable
+
+Signed-By: /etc/apt/keyrings/docker.asc
+
+EOF
+
+# sudo apt update
+
+# sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+Validate docker installation:
+
+# docker --version 
+
+
+If required go to this link for installation steps: https://docs.docker.com/engine/install/ubuntu/
+
+================================================
+
+Demo 1: Pull Docker Image from Docker Hub to EC2 machine
+
+# docker images
+
+# docker pull ubuntu
+
+Check images:
+
+# docker images 
+
+Demo 2: Run the Image to create a container 
+
+# docker run ubuntu 
+
+Query all containers:
+
+# docker ps -a
+
+
+Demo 3: Container - Runtime Options
+
+Run an Image to create a container
+Container should have a unique name
+Root user should be inside the container 
+
+# docker run -it --name=cont1 ubuntu
+
+Here: 
+-i : interact
+-t: terminal
+
+-it: interact with the terminal of the container
+
+How to come out of container and keep the container running
+
+Press CTRL key  and press pq
+
+You will on the docker host
+Check the container status and name : 
+
+# docker ps -a
+
+
+Date 18-Nov-2025
+Agenda:
+Docker detached mode
+Deleting and inspecting containers
+Docker port mapping
+Docker volumes
+2. Detached mode (-d):
+
+--> Container will created, container will running
+--> root user will NOT be attached to the container
+
+
+# docker run -d nginx
+
+
+
+# docker ps -a
+
+# docker info
+
+
+3.Execute a command on the container from the host server
+
+# docker exec -it <container id> bash 
+
+
+4. Delete all containers
+
+# docker rm -f $(docker ps -aq)
+
+5. Clean up the docker host (Delete stopped containers, delete all images)
+
+# docker system prune --all
+
+Give y 
+
+It will delete all stopped containers and delete all images
+6. Port Mapping or Port Forwarding
+
+By default an application on docker container is avaibale on its exposed port.
+
+It is the users internet that cannot reach the container port
+
+For this we have do port forwarding or mapping in docker
+
+i.e. we have to map a VM free system port with container port
+
+example = 8989:80
+
+systemport:containerport
+
+> If a container is already created, we cannot do port forwarding for the container
+
+> port forwarding will be applied at the docker run command itself
+
+> flag for port forwarding (-p) and -P
+
+# docker run --name web1 -d -p 8989:80 nginx
+
+> if you want docker to do port mapping then use flag -P
+
+# docker run --name web2 -d -P httpd
+
+
+7. Docker Volumes
+
+NAMED VOLUMES
+Use case 1: Preserve data of the container on the docker host, even if container is deleted, Data should be persistent
+Create a volume on the host machine where we will preserve data of container 
+
+# docker volume create myvol 
+
+         It creates a directory in /var/lib/docker/volumes folder
+
+See details of the volume : 
+
+#  docker volume inspect myvol
+
+Mount the volume on the container : 
+  # docker run -it -v myvol:/tmp ubuntu
+
+You will be on the container
+
+Create 2 files in /tmp directory 
+
+# cd /tmp
+# touch contfile1 contfile2
+
+Come out the container 
+
+Go to volume directory : 
+
+# cd /var/lib/docker/volumes/myvol/_data 
+
+# ls 
+
+Containers data will be available.
+
+Now delete the container 
+
+# docker rm -f <container id> 
+
+But data will still be there in the volumes directory.
+
+
+Use Case 2: Mount the files from host machine to the containers directory 
+
+Already data is present in the volumes directory. Just mount it on the container using -v option in docker run command.
+
+# docker run -it -v myvol:/tmp ubuntu
+
+In /tmp directory you will see the data. 
+Come out of the container. 
+
+Use Case 3: Sharing of data between the 2 containers using volume 
+
+
+Create an ubuntu container, run a command that generates date -> send output to a file (index.html) 
+
+Preserve this file on the volume
+
+# docker run -it -v myvol1:/tmp ubuntu
+
+# cd /var/lib/docker/volumes/myvol1/_data 
+
+# ls
+
+We will see the index.html 
+
+Create a new container, that will read data from volume.
+
+ # docker run -d -P -v myvol1:/usr/local/apache2/htdocs/  httpd
+
+
+BIND MOUNT VOLUME
+
+In this type of volume, any directory on the VM can be taken and mounted on the container during runtime.
+
+We have a repository where developers are maintaining the application code.
+
+https://github.com/Sonal0409/ecomm.git
+
+
+We want to deploy this application on a httpd container. Get the above code on the docker host machine. We also want to access the ecomm application from the browser 
+
+
+# git clone https://github.com/Sonal0409/ecomm.git
+
+#  docker run --name myweb -d -P  -v /root/ecomm:/usr/local/apache2/htdocs/    httpd
+
+# docker ps -a
+
+Any change the developer makes on the code, we have to fetch the latest code and the container should have the new changes. 
+
+# docker pull origin master 
+
+Changes will reflect on container,
+
+Date :20-nov-2025
+
+Agenda:
+
+-> Create custom Images -> push image to Dockerhub
+-> Dockerfile to build image 
+-> Docker-compose tool
+
+
+Commit a container in to Image
+
+
+When ever we have to create our custom image using dockerfile, docker will always create a temporary container -> execute the argument of dockerfile → commit container into an image -> thereby getting a custom image layer → we can run this custom image → we get another container → in this again the next step of dockerfile is executed→ this container is again committed into an Image -> thereby getting next custom image layer-> the process continues until all the steps of dockerfile are executed.
+These temporary containers are deleted 
+The Final Image is collection of all the image layers
+
+Do not do this demo- it is just for understanding the build process of docker.
+
+
+
+# docker run -it --name=cont1 ubuntu
+
+
+We will  be on the container 
+
+Customize the container by installing some packages 
+
+# apt-get update && apt-get install git -y
+
+# apt-get install curl -y
+
+
+Come out of the container - press CTRL pq 
+
+Commit the container into an Image 
+
+# docker commit cont1 myubuntu
+
+# docker images 
+
+
+Now delete the container and we create a new container using Custom image 
+
+
+# docker rm -f $(docker ps -aq)
+
+# docker run -it --name=mycont myubuntu
+
+On the containers run the command to validate 
+
+# curl --version
+# git --version
+
+Come out of container -> exit
+
+Pushing image to dockerhub, so others can access your image
+
+# docker login -u <docker-hub-username>
+
+Give password when asked 
+
+Login will be successful
+
+Change the image name, so as to include you account library 
+
+# docker tag myubuntu  sonal04/myubuntu
+Push the image to your dockerhub account
+
+# docker push sonal04/myubuntu 
+
+
+You can go to dockerhub → your hub → see the custom image is present
+
+Dockerfile
+==============================
+
+A dockerfile is a simple text file 
+It consist of instructions of what you want on your container
+The name of the file will always be dockerfile or Dockerfile 
+There is no extension to this file 
+To write this file no special coding skills are required
+This file is written using 12 docker keywords and we arguments to these keywords 
+
+Syntax: 
+
+keyword argument/command 
+
+====================================
+
+
+          
+Keywords to write dockerfile:
+=================================== 
+
+1. FROM
+A dockerfile will always start with FROM keyword 
+FROM which base image you want to customize your own image
+What is the base image over which you will do your customization
+FROM keyword also indicates what will be the base of your container 
+This is mandatory keyword 
+
+2. RUN
+run linux commands to install/upgrade/uninstall packages on the container 
+run linux commands to create directories, create files, users, groups and permissions
+This keyword can be repeated multiple times in the dockerfile 
+the container when created form this dockerfile image-- all these linux commands will be pre-executed on it 
+This is not a mandatory keyword 
+
+3. ENV
+to create variables and give values them, we use this keyword 
+The scope of these variables is only in dockerfile 
+the variables can be called in dockerfile with synatx as ${VAR_NAME}
+This is not a mandatory keyword 
+
+4. LABEL 
+example:
+ LABEL key= "value"
+LABEL maintainer="NGINX Docker Maintainers <docker-maint@nginx.com>"
+This is not a mandatory keyword 
+The LABEL instruction adds metadata to an image. 
+A LABEL is a key-value pair. 
+To include spaces within a LABEL value, use quotes and backslashes as you would in command-line parsing. 
+A few usage examples:
+LABEL "com.example.vendor"="ACME Incorporated"
+LABEL com.example.label-with-value="foo"
+LABEL version="1.0"
+LABEL description="This text illustrates \
+that label-values can span multiple lines."
+An image can have more than one label. You can specify multiple labels on a single line.
+
+
+5. COPY 
+It is used to copy a file from docker host to the containers directory 
+But it cannot copy .tar files on container directory 
+
+6. ADD 
+It is used to copy a file from docker host to the containers directory
+But it can copy .tar files, by extracting the files and copy on container directory
+
+7. EXPOSE 
+using this keyword, we provide port number
+this will be target port of container, where the application is exposed.
+
+8. CMD 
+using this keyword we will provide the  command that will run once the container is launched
+this command will be responsible to start/stop an application/sever on container or execute any file
+The default command on the container can be replaced by a new command passed at runtime 
+
+9. ENTRYPOINT
+using this keyword we will provide the  command that will run once the container is launched
+The default command on the container CANNOT be replaced by a new command passed at runtime rather the new command passed at runtime goes as an argument to the entrypoint command.
+
+
+
+Build an image from dockerfile 
+
+# docker build -t myimagenginx .
+
+
+Create a dockerfile to deploy HTMl code on nginx server 
+
+# mkdir mydockerfiles 
+
+# cd mydockerfiles 
+
+# vim dockerfile 
+
+
+
+# this is our nginx deployment dockerfile
+
+FROM ubuntu
+RUN apt-get update
+RUN apt-get install nginx -y
+LABEL description="This is nginx deployment"
+COPY index.html /var/www/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+
+Save the file 
+
+# vim index.html 
+
+<h1> This file is from docker </h1> 
+
+
+Build the dockerfile to image 
+
+# docker build -t myimagenginx . 
+
+# docker images 
+
+# docker run -d -P myimagenginx
+
+# docker ps -a 
+
+Demo for python dockerfile
+=======================================
+
+# cd
+
+# mkdir mydockerfile1
+
+# cd mydockerfile1
+
+# vim app.py
+
+from flask import Flask 
+import os 
+app = Flask(__name__) 
+@app.route('/') 
+
+def hello(): 
+    return ('\nHello from Container World! \n\n')
+
+if __name__ == "__main__": 
+    app.run(host="0.0.0.0", port=8080, debug=True)
+
+
+Save the file
+
+# vim dockerfile
+
+FROM ubuntu:20.04
+RUN apt update && apt install python3 -y && apt install python3-flask -y
+COPY app.py /tmp
+EXPOSE 8080
+CMD ["python3", "/tmp/app.py"]
+
+
+save the file
+
+# docker build -t myimage01 .
+
+# docker run -d -P myimage01
+=============================================
+
+Docker and Jenkins Pipeline:
+==============================================
+
+Create the following pipeline in jenkins
+
+pipeline{
+    tools{
+        maven 'mymaven'
+    }
+    agent any
+
+    stages{
+        stage('clone repo'){
+            steps{
+                git 'https://github.com/Sonal0409/DevOpsCodeDemo.git'
+            }
+        }
+        stage('Build Code'){
+            steps{
+                sh 'mvn package'
+            }
+        }
+        
+        
+        stage('build Image'){
+          
+            steps{
+                            sh 'docker build -t myaddressbook .'
+            }
+        }
+        
+            stage('Deploy container'){
+            steps{
+                sh 'docker run -d -P myaddressbook'
+            }
+        }
+    }
+}
+
+
+Before executing the pipleine give jenkins permsision to run docker commands
+ chmod 777 /var/run/docker.sock
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
