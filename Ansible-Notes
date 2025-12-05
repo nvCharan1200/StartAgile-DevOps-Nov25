@@ -480,3 +480,33 @@ Example 2: When keyword
 Save the file and execute the file.
 
 ==============================================
+
+# vim index.html
+
+<h1> This is HTML file to be deployed </h1>
+<h1> This file is from Ansible Controller </h1>
+<h1> This file is created by Sonal </h1>
+...new code
+
+# vim playbook8.yml
+
+- name: Deploy HTML code on worker nodes
+  hosts: webserver
+  vars:
+    pkg_name: apache2
+    dest_path: /var/www/html
+  tasks: # parent tasks
+  - name: update apt repo
+    command: apt update
+  - name: Install {{ pkg_name }} package
+    package: name={{ pkg_name }} state=present
+  - name: Start the {{ pkg_name }} service
+    service: name={{ pkg_name }} state=started
+  - name: Copy HTML code on the server
+    copy: src=index.html dest={{ dest_path }}
+    notify: Restart {{ pkg_name }} service
+  handlers: # child tasks
+  - name: Restart {{ pkg_name }} service
+    service: name={{ pkg_name }} state=restarted
+
+==================================================
