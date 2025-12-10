@@ -1,0 +1,150 @@
+
+Terraform:
+
+1. It is an automation tool to provision infrastructure .
+2. Infrastructure can be you network, subnet, storage, security groups, LB, Autoscalers, EC2 etc etc 
+3. Writing the code to automatically provision infrastructure is called as Infrastructure as Code .
+4. Terraform is IAC tool.
+5. It is a product of Hashicorp 
+6. It has 2 parts :
+- core 
+- provider 
+Provider: It is the destination where terraform with create/update/delete infrastructure
+Example: AWS, GCP, Azure
+
+Core: Core is the terraform binary/tool that we install on our EC2 machine
+Using the terraform core, we will infrastructure provisioning code
+The code in Terraform is written using HCL -> Hashicorp Cooperation Language
+The code file will have extension as .tf file -> it is called as Terraform configuration file
+In this file we will write the infrastructure details that we desire on the provider 
+As an TF admin --> we will execute the Terraform configuration file -> TF will connect to provider and create the infra 
+Once the infra has been created/updated/deleted -> TF has to maintain that live infra details somewhere
+So TF has an internal API that creates a file called TFState file.
+
+TFState file: This file is created by TF, admin will not edit this file 
+This file consist of current infra that is available on provider 
+
+In TF you have 2 file:
+
+Terraform configuration file : where you write code -> Desired infrastructure 
+Terraform state file->Name= terraform.tfstate => terraform creates it -> Current infrastructure
+
+Install Terraform on Ubuntu Ec2 server
+
+Create a Ec2 server on AWS of instance type : t2.micro 
+
+Step to install Terraform:
+=================================
+wget -O - https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(grep -oP '(?<=UBUNTU_CODENAME=).*' /etc/os-release || lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+sudo apt update && sudo apt install terraform -y 
+
+terraform --version
+
+Before we start writing terraform code, we need to create credentials of type accesskey and secret key on AWS
+Using these credentials terraform will connect to AWS 
+
+These credentials has to be stored on the ec2 machine, so that terraform can use them to connect to AWS
+
+On the EC2 server : run the below Commands
+
+Install AWS cli 
+
+# apt-get update 
+
+# apt-get install awscli -y
+
+Run the below commands to store access key and secret key on the EC2 server 
+
+# aws configure
+AWS Access Key ID [None]: <enter-your-access-key>
+AWS Secret Access Key [None]: <enter-your-secret-key>
+Default region name [None]: <do not enter anything>
+Default output format [None]: <do not enter anything>
+
+=====================================
+Terraform code is written in blocks 
+================================
+ Provider block - mandatory block
+ Data block 
+ Resource block 
+ variable block 
+ locals block 
+ Dynamic block 
+ module block 
+ provisioner block 
+ connection block
+ 
+ Demo 1: Create a Ec2 server on the AWS 
+
+ provider "aws" {
+  region = "us-east-1"
+}
+
+resource "aws_instance" "myec2"  {
+
+ami = "ami-068c0051b15cdb816"
+instance_type =  "t2.micro"
+ tags = {
+    Name = "Instance-1"
+  }
+
+}
+
+# terraform init 
+# terraform validate 
+# terraform plan 
+# terraform apply --auto-approve
+# terraform destroy --auto-approve
+
+Demo 2: Create variables in terraform and use them in the TF configuration file 
+Also use Count - meta loop argument 
+
+#  vim variable.tf
+
+variable "myami" {
+
+default = "ami-068c0051b15cdb816"
+
+}
+
+variable "my_instance_type"{
+
+default = "t3.micro"
+
+}
+
+
+variable "instance_name" {
+default = "Dev"
+
+}
+
+save the file 
+
+# vim awsinfra.tf 
+
+provider "aws" {
+  region = "us-east-1"
+}
+
+resource "aws_instance" "myec2"  {
+
+ami = var.myami
+instance_type =  var.my_instance_type
+
+count = 5 # count is a loop arguments that has  an index number and it increments by itself
+
+ tags = {
+    Name = "${var.instance_name}-${count.index}"
+  }
+
+}
+
+save the file 
+
+# terraform apply --auto-approve 
+
+Delete the infra 
+
+# terraform destroy  --auto-approve 
