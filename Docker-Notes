@@ -601,74 +601,61 @@ save the file
 Docker and Jenkins Pipeline:
 ==============================================
 
-Create the following pipeline in jenkins
+CICD - JENKINS DOCKER PIPELINE:
+
+FOR Your information:
+
+The easiest way to run this application is simply to move the war file to your CATALINA_HOME/webapps directory. Tomcat will automatically expand and deploy the application for you. You can view it with the following URL (assuming that you're running tomcat on port 8080 as is the default):
+<publicIP>:<oirtnumber>/addressbook
+
+Run this command on terminal:
+
+# chmod -R 777 /var/run/docker.sock
+
 
 pipeline{
+
+    agent any
     tools{
         maven 'mymaven'
     }
-    agent any
-
     stages{
-        stage('clone repo'){
-            steps{
-                git 'https://github.com/Sonal0409/DevOpsCodeDemo.git'
-            }
+        stage('checkout code')
+        {
+            steps{ 
+            git 'https://github.com/Sonal0409/DevOpsCodeDemo.git'
         }
-        stage('Build Code'){
-            steps{
-                sh 'mvn package'
-            }
         }
-        
-        
-        stage('build Image'){
-          
-            steps{
-                            sh 'docker build -t myaddressbook .'
-            }
+
+    stage('Test the code'){
+        steps{
+            sh 'mvn test'
         }
-        
-            stage('Deploy container'){
-            steps{
-                sh 'docker run -d -P myaddressbook'
-            }
+
+    }
+    stage('build the code'){
+        steps{
+            sh 'mvn package'
         }
     }
+    
+     stage('Build the Image'){
+        steps{
+            sh 'docker build -t myimageaddressbook:$BUILD_NUMBER .'
+        }
+    }
+    stage('push the image dockerhub'){
+        // use plugin withCredentials
+    }
+    
+    
+     stage('Deploy the code'){
+        steps{
+            sh 'docker run -d -P myimageaddressbook:$BUILD_NUMBER'
+        }
+    }
+    }
 }
-
-
-Before executing the pipleine give jenkins permsision to run docker commands
- chmod 777 /var/run/docker.sock
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
