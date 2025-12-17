@@ -1,0 +1,143 @@
+
+What is AIOPS and why AIOPS?
+
+IT industry is dependent on SDLC
+This SDLC gives us various model
+Waterfall model
+Agile mythology 
+DevOps principles
+AIOPS -> AI + OPS
+Use of AI capabilities in the IT operations
+AI ops is not just for IT industry- its for everyone
+AIOPS : wherever in business that involves operations and automation using AI
+
+Exisitng Automation Example:
+Auto scaler :
+CPU usage is 80%
+Memory usage is 50% 
+then scale up the VM
+Here : we have set a rule -> and an action to take place (REACTION)
+
+But now if AI is included with it: 
+check the data based on the rule-> Observation Friday 5pm -> bring up 50 VM
+
+Analyze the data based on the rule ->Proactively take the action
+
+The major difference between DevOps and AI Ops: 
+In DevOps we have automation 
+AI ops we use algorithms, intelligence on given data and analyze and automate
+AI is adding value to our IT operations.
+
+AI : People, technology, process 
+physical servers --> data centers -> VM -> Containers
+With AI as people we learn new technologies and new process to improve ourselves.
+
+3 main pillars of AIOPS:
+
+- Data 
+AIOps includes integrating with the Existing Systems to collect lots of data over a period of time
+Observation and monitoring data on application
+- Analytics : Difference between Analysis and Analytics?
+Collecting data about your car? 
+ - fuel?
+ - engine?
+ - battery?
+ - tyre?
+Analyze the data and come to a conclusion- take an action
+Analytics : Analyze data based on previous actions, current actions and take necessary decisions even before the problem occurs
+It is a continuous process
+- Automation
+
+Analytics pipleine:
+====================
+RAW data -->gets cleaned up -->Analyzed -> see it on the dashboard -> actions automatically 
+
+Collection of RAW data is also called as Data Ingestion
+===================
+In the real time from the application the generated data is collected.
+kafka
+AWS kinesis
+
+Example:
+==============
+Custome name, id, date, time, location, products, order
+
+Data Storage 
+========================
+Use a central location to store the data for:
+historical analysis 
+processing 
+machine learning 
+
+Tools: S3 buckets
+Datawarehouse tools : snowflake
+
+Data Processing:
+=======================
+- enriching the data 
+- removing duplicates
+- structuring the data 
+
+Tools:
+Spark 
+AWS glue 
+kinesis Analytics
+
+
+Data Modeling/ Data Analytics (predicting & insights )
+We use ML model that will run on the given data and predict the output
+
+Tools: 
+Sagemaker
+sciket/pandas
+spark ML
+
+Visualization: display the predicted analysis and insights 
+Tools:
+tableau
+looker
+quicksight
+
+MLOPS:
+=============================
+MLOps refers to a practice and discipline within Machine learning that aims to unify and streamline
+the machine Learning system, dev and operations
+It involves collaboration between data scientists, ML engineers and IT professionals to automate and optimize 
+the end to end lifecycle of ML application
+
+based on the example we make below conclusions:
+============================================
+1. Data management system 
+2. Version control system 
+3. Automation - pipeline
+4. Experiment tracking
+5. Delivering
+6. Monitoring/ feedback ->Retraining
+7. Setup new infrastructure 
+8. licenses and security
+
+MLOPS -> DEVOPS + data engineering
+We need to know how to make ML models and deploy them in our environments using Devops tools 
+========================================
+Generative AI
+=======================================
+Gen AI is a class of AI
+that generates models that will create new content like text, image, video That resembles human created data 
+
+Traditionally AI was - give an input and give an output- ai tool will find patterns on the give input and output 
+and give predictions
+
+Generative AI: where we learn form the give data and generates a new data based on it
+
+On a gen AI model -> upload lots of images of cat  and tell this is a cat->
+ will analyze all the images - generate an image/data how a cat will look it.
+
+GEN AI -> RAG - Retrival augment based chatbots
+
+Changing it form reactive to proactive 
+Add agents to your exiting ai tool -> agentic gen AI
+
+Agentic AI means an AI system  that can act independently to achieve the desired goal
+plans -> decides ->acts -> observe -> adapt
+
+It executes tasks, its active, works in a loop.
